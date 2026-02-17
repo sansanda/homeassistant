@@ -1,0 +1,600 @@
+- id: '1762024485786'
+  alias: open biblioteca
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: -01:00:00
+  conditions: []
+  actions:
+  - device_id: be5308129fd1a445739dde6387c120a0
+    domain: cover
+    entity_id: 5184e42731122a408eb10fe85f2210b3
+    type: open
+  mode: single
+- id: '1762024859153'
+  alias: New automation
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 00:15:00
+  conditions: []
+  actions:
+  - device_id: be5308129fd1a445739dde6387c120a0
+    domain: cover
+    entity_id: 5184e42731122a408eb10fe85f2210b3
+    type: close
+  mode: single
+- id: '1762205541712'
+  alias: Abre persiana comedor
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: -01:00:00
+  conditions: []
+  actions:
+  - device_id: e9c966505a5345bda9593fa2792976f8
+    domain: cover
+    entity_id: b6b9190daa11aaf6196511efaa2c7a64
+    type: open
+  mode: single
+- id: '1762205718783'
+  alias: Cierra persiana comedor
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 00:15:00
+  conditions: []
+  actions:
+  - device_id: e9c966505a5345bda9593fa2792976f8
+    domain: cover
+    entity_id: b6b9190daa11aaf6196511efaa2c7a64
+    type: close
+  mode: single
+- id: '1765123023351'
+  alias: home_temperature
+  description: ''
+  triggers:
+  - trigger: time
+    at: '21:30:00'
+  conditions: []
+  actions:
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.desbloqueo_temporal_temperature_setpoint
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      hvac_mode: heat
+      temperature: 15
+    target:
+      device_id: 6865684a1a91773a5a190257df601664
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.1765478648749
+  mode: single
+- id: '1765123704778'
+  alias: thermostat_wake_mode
+  description: ''
+  triggers:
+  - trigger: time
+    at: 05:30:00
+  conditions: []
+  actions:
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.desbloqueo_temporal_temperature_setpoint
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      hvac_mode: heat
+      temperature: 17
+    target:
+      device_id: 6865684a1a91773a5a190257df601664
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.1765478648749
+  mode: single
+- id: '1765123785551'
+  alias: thermostat_emptyhome_mode
+  description: ''
+  triggers:
+  - trigger: time
+    at: 08:00:00
+  conditions: []
+  actions:
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.desbloqueo_temporal_temperature_setpoint
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      hvac_mode: heat
+      temperature: 17
+    target:
+      device_id: 6865684a1a91773a5a190257df601664
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.1765478648749
+  mode: single
+- id: '1765123936594'
+  alias: thermostat_comfortable_mode
+  description: ''
+  triggers:
+  - trigger: time
+    at: '16:00:00'
+  conditions: []
+  actions:
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.desbloqueo_temporal_temperature_setpoint
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - action: climate.set_temperature
+    metadata: {}
+    data:
+      hvac_mode: heat
+      temperature: 17.3
+    target:
+      device_id: 6865684a1a91773a5a190257df601664
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.desbloqueo_temporal_temperature_setpoint
+  mode: single
+- id: '1765396515445'
+  alias: Temperature SetPoint Saver
+  description: 'Automación: cuando cambies el setpoint de temperature del termostato
+    y el bloqueo esté activo, lo vuelve atrás'
+  triggers:
+  - trigger: state
+    entity_id:
+    - climate.netatmo_smart_thermostat
+    attribute: temperature
+  conditions:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: input_boolean.block_tsetpoint
+      state: 'off'
+    - condition: template
+      value_template: "{{ trigger.from_state is not none\n   and trigger.to_state.attributes.temperature
+        !=\n       trigger.from_state.attributes.temperature }}\n"
+  actions:
+  - action: input_number.set_value
+    data:
+      value: '{{ trigger.to_state.attributes.temperature }}'
+    target:
+      entity_id: input_number.saved_temperature_setpoint
+  mode: single
+- id: '1765397121376'
+  alias: Temperature Setpoint Reverter
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - climate.netatmo_smart_thermostat
+    attribute: temperature
+  conditions:
+  - condition: state
+    entity_id: input_boolean.block_tsetpoint
+    state: 'on'
+  - condition: template
+    value_template: "{{ trigger.from_state is not none\n   and trigger.to_state.attributes.temperature
+      !=\n       trigger.from_state.attributes.temperature }}\n"
+  actions:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 1
+      milliseconds: 0
+  - action: climate.set_temperature
+    data:
+      temperature: '{{ trigger.from_state.attributes.temperature }}'
+    target:
+      device_id: 6865684a1a91773a5a190257df601664
+  mode: single
+- id: '1765968845322'
+  alias: enable_presence_simulation_loop(radio)
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.presence_simulation
+    to:
+    - 'on'
+    from:
+    - 'off'
+  - trigger: event
+    event_type: next_step
+  conditions:
+  - condition: state
+    entity_id: input_boolean.presence_simulation
+    state:
+    - 'on'
+  - condition: time
+    after: 09:00:00
+    before: '21:00:00'
+  actions:
+  - parallel:
+    - action: script.1767359181214
+      metadata: {}
+      data:
+        media_player: media_player.kitchen_speaker
+        volume_level: 0.45
+        media_content_id: media-source://radio_browser/dd39399b-e164-4e98-be93-58a4b0011691
+  - delay:
+      hours: 0
+      minutes: 45
+      seconds: 0
+      milliseconds: 0
+  - event: next_step
+    event_data: {}
+  mode: restart
+- id: '1767737619011'
+  alias: control_home_temperature_automations
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.home_temperature_automation
+    from:
+    - 'on'
+    to:
+    - 'off'
+  - trigger: state
+    entity_id:
+    - input_boolean.home_temperature_automation
+    from:
+    - 'off'
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.home_temperature_automation
+      state:
+      - 'on'
+    then:
+    - action: automation.turn_on
+      metadata: {}
+      target:
+        entity_id:
+        - automation.home_temperature
+        - automation.thermostat_wake_mode
+        - automation.thermostat_emptyhome_mode
+        - automation.thermostat_comfortable_mode
+      data: {}
+    else:
+    - action: automation.turn_off
+      metadata: {}
+      target:
+        entity_id:
+        - automation.home_temperature
+        - automation.thermostat_wake_mode
+        - automation.thermostat_emptyhome_mode
+        - automation.thermostat_comfortable_mode
+      data:
+        stop_actions: true
+  mode: single
+- id: '1767779845921'
+  alias: control_persianas_automations
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.persianas_automation
+    from:
+    - 'on'
+    to:
+    - 'off'
+  - trigger: state
+    entity_id:
+    - input_boolean.persianas_automation
+    from:
+    - 'off'
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - if:
+    - condition: state
+      entity_id: input_boolean.persianas_automation
+      state:
+      - 'on'
+    then:
+    - action: automation.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - automation.open_biblioteca
+        - automation.new_automation
+        - automation.abre_persiana_comedor
+        - automation.cierra_persiana_comedor
+    else:
+    - action: automation.turn_off
+      metadata: {}
+      data:
+        stop_actions: true
+      target:
+        entity_id:
+        - automation.open_biblioteca
+        - automation.new_automation
+        - automation.abre_persiana_comedor
+        - automation.cierra_persiana_comedor
+  mode: single
+- id: '1767795203878'
+  alias: disable_presence_simulation_loop
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.presence_simulation
+    from:
+    - 'on'
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - action: timer.cancel
+    metadata: {}
+    target:
+      entity_id: timer.timer1
+    data: {}
+  - action: timer.cancel
+    metadata: {}
+    target:
+      entity_id: timer.timer_light_balcom
+    data: {}
+  mode: restart
+- id: '1768148870779'
+  alias: enable_presence_simulation_loop(lamparas)
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.presence_simulation
+    to:
+    - 'on'
+    from:
+    - 'off'
+  - trigger: event
+    event_type: next_step
+  conditions:
+  - condition: state
+    entity_id: input_boolean.presence_simulation
+    state:
+    - 'on'
+  - condition: time
+    after: 09:00:00
+    before: '21:00:00'
+  actions:
+  - parallel:
+    - action: script.turnon_ligth_minutes
+      metadata: {}
+      data:
+        lampara_balcon: switch.shelly1pmminig3_d0cf13cc2b6c
+        lampara_recibidor: switch.shelly1pmminig3_d0cf13cf22a0
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - event: next_step
+    event_data: {}
+  mode: restart
+- id: '1768170636855'
+  alias: enable_presence_simulation_loop(lamparas)2
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.presence_simulation
+    to:
+    - 'on'
+    from:
+    - 'off'
+  - trigger: event
+    event_type: next_step
+  conditions:
+  - condition: state
+    entity_id: input_boolean.presence_simulation
+    state:
+    - 'on'
+  actions:
+  - if:
+    - condition: time
+      after: '21:00:00'
+      before: 00:00:00
+    then:
+    - parallel:
+      - action: script.turnon_ligth_minutes
+        metadata: {}
+        data:
+          lampara_balcon: switch.shelly1pmminig3_d0cf13cc2b6c
+          lampara_recibidor: switch.shelly1pmminig3_d0cf13cf22a0
+    - delay:
+        hours: 0
+        minutes: 1
+        seconds: 0
+        milliseconds: 0
+    - event: next_step
+      event_data: {}
+    else:
+    - delay:
+        hours: 0
+        minutes: 1
+        seconds: 0
+        milliseconds: 0
+    - event: next_step
+      event_data: {}
+  mode: restart
+- id: '1769589146393'
+  alias: encendder_luz_recibidor
+  description: ''
+  triggers:
+  - type: occupied
+    device_id: 79abdfa20d0037cf8e5d2c9700b96896
+    entity_id: 96a8a30199bb67b5d9d99c5c96a30933
+    domain: binary_sensor
+    metadata:
+      secondary: false
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 85bbaea7d74ff7e14c0ac783c787fdf9
+    entity_id: bfbd817518b1543bde1e2eaa324a99ab
+    domain: switch
+  mode: single
+- id: '1769590121047'
+  alias: apagar_luz_recibidor
+  description: ''
+  triggers:
+  - type: not_occupied
+    device_id: 79abdfa20d0037cf8e5d2c9700b96896
+    entity_id: 96a8a30199bb67b5d9d99c5c96a30933
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - if:
+    - type: is_not_occupied
+      condition: device
+      device_id: 79abdfa20d0037cf8e5d2c9700b96896
+      entity_id: 96a8a30199bb67b5d9d99c5c96a30933
+      domain: binary_sensor
+    then:
+    - type: turn_off
+      device_id: 85bbaea7d74ff7e14c0ac783c787fdf9
+      entity_id: bfbd817518b1543bde1e2eaa324a99ab
+      domain: switch
+  mode: single
+- id: '1770569602370'
+  alias: vacaciones
+  description: Automation creada dejar la casa en modo vacaciones. Es decir, simulador
+    de presencia on, caldera off, agua cortada, etc...
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.enable_vacaciones
+    from:
+    - 'off'
+    to:
+    - 'on'
+  - trigger: state
+    entity_id:
+    - input_boolean.enable_vacaciones
+    from:
+    - 'on'
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: 38d694d807f005179271be9ae7e27cfe
+    entity_id: 99aa8c659a8f855dbab707e0f23317fc
+    domain: switch
+  - if:
+    - condition: state
+      entity_id: input_boolean.enable_vacaciones
+      state:
+      - 'on'
+    then:
+    - type: turn_off
+      device_id: 38d694d807f005179271be9ae7e27cfe
+      entity_id: 99aa8c659a8f855dbab707e0f23317fc
+      domain: switch
+    else:
+    - type: turn_on
+      device_id: 38d694d807f005179271be9ae7e27cfe
+      entity_id: 99aa8c659a8f855dbab707e0f23317fc
+      domain: switch
+  mode: single
+- id: '1770919359107'
+  alias: apagar_luz_pas_matrimonio
+  description: ''
+  triggers:
+  - type: not_occupied
+    device_id: 369ea3f9bf171331b7e6c2f96d1d6e4e
+    entity_id: 456e3434ac9704a43f130619bb97f478
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - if:
+    - type: is_not_occupied
+      condition: device
+      device_id: 369ea3f9bf171331b7e6c2f96d1d6e4e
+      entity_id: 456e3434ac9704a43f130619bb97f478
+      domain: binary_sensor
+    then:
+    - type: turn_off
+      device_id: 7c9196cbe119cbf03eaf5d3d083a93ac
+      entity_id: 0136b3383f40978b7933d6f9d45868ad
+      domain: switch
+  mode: single
+- id: '1770919555138'
+  alias: encender_luz_pas_matrimonio
+  description: ''
+  triggers:
+  - type: occupied
+    device_id: 369ea3f9bf171331b7e6c2f96d1d6e4e
+    entity_id: 456e3434ac9704a43f130619bb97f478
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 7c9196cbe119cbf03eaf5d3d083a93ac
+    entity_id: 0136b3383f40978b7933d6f9d45868ad
+    domain: switch
+  mode: single

@@ -1,0 +1,29 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Activalo si quieres que homeassistant pueda descubrir devices via MQTT integration
+# mqtt:
+
+template:
+  - sensor:
+      - name: "Total Power"
+        unit_of_measurement: "W"
+        state: >
+          {{ 
+            (states('sensor.fridge_energy_power') | float(0)) +
+            (states('sensor.washer_machine_energy_power') | float(0)) +
+            (states('sensor.dish_washer_energy_power') | float(0)) +
+            (states('sensor.oliver_desktop_energy_power') | float(0)) +
+            (states('sensor.biblio_desktop_energy_power') | float(0)) +
+            (states('sensor.shellyproem50_9454c5b898f8_energy_meter_0_power') | float(0)) +
+            (states('sensor.shellyproem50_9454c5b898f8_energy_meter_1_power') | float(0))
+          }}

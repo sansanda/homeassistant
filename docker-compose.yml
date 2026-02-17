@@ -1,0 +1,32 @@
+services:
+
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    volumes:
+      - ./config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    network_mode: host
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: unless-stopped
+    network_mode: host
+    user: "1000:1000"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    restart: unless-stopped
+    network_mode: host
+    privileged: true
+    volumes:
+      - ./esphome:/config
+    environment:
+      - TZ=Europe/Madrid
+    command: dashboard /config

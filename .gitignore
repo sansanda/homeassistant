@@ -1,0 +1,21 @@
+config/.storage/
+.storage/
+
+# Builds
+./esphome/.esphome/build/
+
+# Bases de datos
+*.db
+
+# Logs
+*.log
+
+# Backups HA
+/backups/
+
+# Dependencias
+/deps/
+
+# Caché
+__pycache__/
+
