@@ -25,5 +25,6 @@ template:
             (states('sensor.oliver_desktop_energy_power') | float(0)) +
             (states('sensor.biblio_desktop_energy_power') | float(0)) +
             (states('sensor.shellyproem50_9454c5b898f8_energy_meter_0_power') | float(0)) +
-            (states('sensor.shellyproem50_9454c5b898f8_energy_meter_1_power') | float(0))
+            (states('sensor.shellyproem50_9454c5b898f8_energy_meter_1_power') | float(0)) +
+            (states('sensor.smart_plug_v2_6df83b_extraccion_cocina_power') | float(0))
           }}
