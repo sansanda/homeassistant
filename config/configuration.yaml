@@ -13,6 +13,11 @@ scene: !include scenes.yaml
 # Activalo si quieres que homeassistant pueda descubrir devices via MQTT integration
 # mqtt:
 
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 10.246.11.0/24
+
 template:
   - sensor:
       - name: "Total Power"

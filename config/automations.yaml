@@ -18,7 +18,7 @@
   triggers:
   - trigger: sun
     event: sunset
-    offset: 00:15:00
+    offset: 01:00:00
   conditions: []
   actions:
   - device_id: be5308129fd1a445739dde6387c120a0
@@ -46,7 +46,7 @@
   triggers:
   - trigger: sun
     event: sunset
-    offset: 00:15:00
+    offset: 01:00:00
   conditions: []
   actions:
   - device_id: e9c966505a5345bda9593fa2792976f8
